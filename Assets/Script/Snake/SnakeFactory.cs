@@ -25,11 +25,15 @@ namespace SnakeSnake {
         #region create head method
 
         public Snake CreateSnake() {
-            GameObject headGameObject = GameObject.Instantiate<GameObject>(snakeHeadPrefab);
-            headGameObject.name = headGameObject.name.Replace("(Clone)", "");
-            SetupPhysics(headGameObject);
+            GameObject snakeGameObject = GameObject.Instantiate<GameObject>(snakeHeadPrefab);
+            snakeGameObject.name = snakeGameObject.name.Replace("(Clone)", "");
+            AddRigidBody(snakeGameObject, GameDefinition.PhysicLayer.SnakeLayer);
+            BoxCollider2D collider = AddBoxCollider(snakeGameObject);
+            collider.offset = new Vector2(0, 0.75f);
+            collider.size = new Vector2(0.5f, 0.25f);
+            collider.isTrigger = true;
 
-            Snake snake = headGameObject.AddComponent<Snake>();
+            Snake snake = snakeGameObject.AddComponent<Snake>();
 
             return snake;
         }
@@ -52,7 +56,8 @@ namespace SnakeSnake {
             GameObject snakeBodyGameObject = GameObject.Instantiate<GameObject>(prefab);
             snakeBodyGameObject.name = snakeBodyGameObject.name.Replace("(Clone)", "");
 
-            SetupPhysics(snakeBodyGameObject);
+            AddRigidBody(snakeBodyGameObject, GameDefinition.PhysicLayer.SnakeBodyLayer);
+            AddBoxCollider(snakeBodyGameObject);
 
             SnakeBody snakeBody = snakeBodyGameObject.AddComponent<SnakeBody>();
             return snakeBody;
@@ -84,11 +89,17 @@ namespace SnakeSnake {
 
         #region setup
 
-        private void SetupPhysics(GameObject target) {
-            target.AddComponent<BoxCollider2D>();
+        private Rigidbody2D AddRigidBody(GameObject target, int physicLayer) {
             Rigidbody2D rigid = target.AddComponent<Rigidbody2D>();
             rigid.isKinematic = true;
             rigid.gravityScale = 0;
+            target.layer = physicLayer;
+            return rigid;
+        }
+
+        private BoxCollider2D AddBoxCollider(GameObject target) {
+            BoxCollider2D collider = target.AddComponent<BoxCollider2D>();
+            return collider;
         }
 
         #endregion

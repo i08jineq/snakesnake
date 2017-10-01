@@ -12,6 +12,7 @@ namespace SnakeSnake {
         private Vector3 movementDirection = Vector3.up;
         private List<SnakeBody> bodyList = new List<SnakeBody>();
         private SnakeBody tail;
+        private ICollideObserver collideOberver;
 
         private float movedDeltaDistance = 0;
 
@@ -34,7 +35,7 @@ namespace SnakeSnake {
             movedDeltaDistance += distance;
         }
 
-        private void UpdateBodyTargetPosition() {
+        public void UpdateBodyTargetPosition() {
             Vector3 targetPosition = transform.position;
             foreach(var body in bodyList) {
                 body.UpdateTargetPosition(targetPosition);
@@ -60,6 +61,13 @@ namespace SnakeSnake {
 
         #region public method
 
+        public void RegisterCollideObserver(ICollideObserver observer) {
+            collideOberver = observer;
+        }
+
+        public void UnRegisterCollideObserver(ICollideObserver observer) {
+            collideOberver = null;
+        }
 
         public void Turn(Vector3 direction) {
             if (direction == -movementDirection) { // not allowed to suddenly moveback
@@ -74,13 +82,13 @@ namespace SnakeSnake {
         #region AddBody Part
 
         public void AddBody(SnakeBody body) {
-            bodyList.Add(body);
             SetupLastBodyTransform(body);
+            bodyList.Add(body);
         }
 
         public void AddTail(SnakeBody snakeTail) {
+            SetupLastBodyTransform(snakeTail);
             tail = snakeTail;
-            SetupLastBodyTransform(tail);
         }
 
         public void SetupLastBodyTransform(SnakeBody body) {
@@ -88,6 +96,7 @@ namespace SnakeSnake {
             Vector3 direction = GetLastBodyDirection();
             body.transform.up = direction;
             body.transform.position = position - direction * bodySize;
+            body.UpdateTargetPosition(position);
         }
 
         #endregion
@@ -95,7 +104,7 @@ namespace SnakeSnake {
         #region getter method
 
         public Vector3 GetLastBodyPosition() {
-            if (bodyList.Count == 0) {
+            if (bodyList.Count <= 0) {
                 return transform.position;
             }
             int lastIndex = bodyList.Count - 1;
@@ -110,6 +119,14 @@ namespace SnakeSnake {
             int lastIndex = bodyList.Count - 1;
             SnakeBody body = bodyList[lastIndex];
             return body.transform.up;
+        }
+
+        #endregion
+
+        #region event
+
+        void OnTriggerEnter2D(Collider2D collider) {
+            collideOberver.OnCollideObject(collider);
         }
 
         #endregion

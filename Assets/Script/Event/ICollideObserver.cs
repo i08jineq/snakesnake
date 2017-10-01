@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 namespace SnakeSnake {
-    public interface ISnake {
-        
+    public interface ICollideObserver {
+        void OnCollideObject(Collider2D collider);
     }
 }

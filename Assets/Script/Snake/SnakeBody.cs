@@ -14,7 +14,7 @@ namespace SnakeSnake {
         #region public method
 
         public void UpdateTargetPosition (Vector3 position) {
-            currentBasePosition = targetPosition;
+            currentBasePosition = transform.position;
             targetPosition = position;
         }
 
@@ -23,7 +23,6 @@ namespace SnakeSnake {
             transform.up = distanceVector;
             transform.position = Vector3.Lerp(currentBasePosition, targetPosition, weight);
         }
-
 
         #endregion
     }
