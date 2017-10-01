@@ -6,54 +6,45 @@ namespace SnakeSnake {
     public class Snake : MonoBehaviour, IControllableSnake {
         #region main
 
-        [System.NonSerialized]public float movementSpeed = 1;
         [System.NonSerialized]public float bodySize = 1;
 
+        private float movementSpeed = 1;
         private Vector3 movementDirection = Vector3.up;
         private List<SnakeBody> bodyList = new List<SnakeBody>();
         private SnakeBody tail;
         private ICollideObserver collideOberver;
 
-        private float movedDeltaDistance = 0;
+        private float deltaTIme = 0;
 
+        private const float UpdateTargetPositionPeriod = 0.03f;
         #endregion
 
         #region update
 
         void Update() {
-            if (bodySize <= movedDeltaDistance)
-                UpdateBodyTargetPosition();
             
             UpdateMovement();
             UpdateBody();
-
         }
 
         private void UpdateMovement() {
             float distance = movementSpeed * Time.deltaTime;
             transform.position += movementDirection * distance;
-            movedDeltaDistance += distance;
         }
 
-        public void UpdateBodyTargetPosition() {
-            Vector3 targetPosition = transform.position;
-            foreach(var body in bodyList) {
-                body.UpdateTargetPosition(targetPosition);
-                targetPosition = body.transform.position;
-            }
-            tail.UpdateTargetPosition(targetPosition);
-            //reset move distance
-            movedDeltaDistance = 0;
-        }
 
         private void UpdateBody() {
-            Vector3 lookatPosition = transform.position;
-            float delta = movedDeltaDistance / bodySize;
+            Vector3 targetPosition = transform.position - transform.up * bodySize;
+            float deltaSpeed = movementSpeed * Time.deltaTime;
             foreach(var body in bodyList) {
-                body.UpdateTransform(lookatPosition, delta);
-                lookatPosition = body.transform.position;
+                body.UpdateTransform(targetPosition, deltaSpeed);
+                targetPosition = body.transform.position - body.transform.up * bodySize;
             }
-            tail.UpdateTransform(lookatPosition, delta);
+            tail.UpdateTransform(targetPosition, deltaSpeed);
+        }
+
+        private void UpdateDeltaTIme() {
+            deltaTIme += Time.deltaTime;
         }
 
         #endregion
@@ -67,6 +58,10 @@ namespace SnakeSnake {
 
         public void UnRegisterCollideObserver(ICollideObserver observer) {
             collideOberver = null;
+        }
+
+        public void SetSpeed(float speed) {
+            movementSpeed = speed;
         }
 
         public void Turn(Vector3 direction) {
@@ -96,7 +91,6 @@ namespace SnakeSnake {
             Vector3 direction = GetLastBodyDirection();
             body.transform.up = direction;
             body.transform.position = position - direction * bodySize;
-            body.UpdateTargetPosition(position);
         }
 
         #endregion

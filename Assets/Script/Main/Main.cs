@@ -77,8 +77,8 @@ namespace SnakeSnake {
 
         private void CreateSnake() {
             Vector3 headPosition = new Vector3(-1, -1, 0);
-            snake = snakeFactory.CreateSnake(headPosition, 0.5f, 1);
-            snake.movementSpeed = snakeStartSpeed;
+            snake = snakeFactory.CreateSnake(headPosition, 0.2f, 1);
+            snake.SetSpeed(snakeStartSpeed);
         }
 
         private void CreateSnakeController() {
@@ -138,7 +138,7 @@ namespace SnakeSnake {
         }
 
         private void AddSnakeBody() {
-            snakeFactory.AddSnakeBody(snake);
+            snakeFactory.AddSnakeBodies(snake, 2);
         }
 
         private void DestroyCurrentFood() {
