@@ -4,6 +4,7 @@ using UnityEngine;
 
 namespace SnakeSnake {
     public class Main : MonoBehaviour {
+
         #region factories
 
         private SnakeFactory snakeFactory;
@@ -11,7 +12,7 @@ namespace SnakeSnake {
 
         #endregion
 
-        #region observer
+        #region observers
 
         private ICollideObserver snakeCollideObserver;
 
@@ -51,6 +52,7 @@ namespace SnakeSnake {
 
         #endregion
 
+
         #region create factories
 
         private void CreateSnakeHeadFactory() {
@@ -77,7 +79,7 @@ namespace SnakeSnake {
 
         private void CreateSnake() {
             Vector3 headPosition = new Vector3(-1, -1, 0);
-            snake = snakeFactory.CreateSnake(headPosition, 0.2f, 1);
+            snake = snakeFactory.CreateSnake(headPosition, 1f, 1);
             snake.SetSpeed(snakeStartSpeed);
         }
 

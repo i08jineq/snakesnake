@@ -14,37 +14,32 @@ namespace SnakeSnake {
         private SnakeBody tail;
         private ICollideObserver collideOberver;
 
-        private float deltaTIme = 0;
-
+        private Vector3 previousPosition;
         private const float UpdateTargetPositionPeriod = 0.03f;
         #endregion
 
         #region update
 
         void Update() {
-            
             UpdateMovement();
             UpdateBody();
         }
 
         private void UpdateMovement() {
             float distance = movementSpeed * Time.deltaTime;
+            previousPosition = transform.position;
             transform.position += movementDirection * distance;
         }
 
 
         private void UpdateBody() {
-            Vector3 targetPosition = transform.position - transform.up * bodySize;
-            float deltaSpeed = movementSpeed * Time.deltaTime;
+            Vector3 targetPosition = previousPosition;
             foreach(var body in bodyList) {
-                body.UpdateTransform(targetPosition, deltaSpeed);
-                targetPosition = body.transform.position - body.transform.up * bodySize;
+                previousPosition = body.transform.position;
+                body.UpdateTransform(targetPosition);
+                targetPosition = previousPosition;
             }
-            tail.UpdateTransform(targetPosition, deltaSpeed);
-        }
-
-        private void UpdateDeltaTIme() {
-            deltaTIme += Time.deltaTime;
+            tail.UpdateTransform(targetPosition);
         }
 
         #endregion
@@ -70,6 +65,8 @@ namespace SnakeSnake {
             }
             movementDirection = direction;
             transform.up = direction;
+
+            UpdateMovement();
         }
 
         #endregion
@@ -90,7 +87,7 @@ namespace SnakeSnake {
             Vector3 position = GetLastBodyPosition();
             Vector3 direction = GetLastBodyDirection();
             body.transform.up = direction;
-            body.transform.position = position - direction * bodySize;
+            body.transform.position = position;
         }
 
         #endregion
