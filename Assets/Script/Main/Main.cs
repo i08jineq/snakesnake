@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace SnakeSnake {
     public class Main : MonoBehaviour {
@@ -9,6 +10,8 @@ namespace SnakeSnake {
 
         private SnakeFactory snakeFactory;
         private FoodFactory foodFactory;
+        private GameOverWindowFactory gameOverWindowFactory;
+        private GameScoreUIFactory gameScoreUIFactory;
 
         #endregion
 
@@ -20,15 +23,22 @@ namespace SnakeSnake {
 
         #region main
 
+        // game relate
         private Snake snake;
         private ASnakeController snakeController;
         private GameObject currentFoodObject;
         private int score = 0;
 
+        // ui relate
+        private Canvas mainCanvas;
+        private GameOverWindow gameOverWindow;
+        private GameScoreUI gameScoreUI;
+
         #endregion
 
         #region definition
 
+        private const string GameScene = "GameScene";
         private const float snakeStartSpeed = 10;
 
         #endregion
@@ -38,20 +48,35 @@ namespace SnakeSnake {
         void Awake() {
             CreateSnakeHeadFactory();
             CreateFoodFactory();
+            CreateGameOverWindowFactory();
+            CreateGameScoreUIFactory();
 
             CreateSnakeCollideObserver();
         }
 
         void Start() {
+            SearchMainCanvas();
+
             CreateSnake();
             CreateSnakeController();
-
             CreateFood();
+
+            CreateGameOverWindow();
+            CreateGameScoreUI();
+
+            SetupGameOverWindowEvent();
             SetupSnakeEvent();
         }
 
         #endregion
 
+        #region search item
+
+        private void SearchMainCanvas() {
+            mainCanvas = GameObject.FindObjectOfType<Canvas>();
+        }
+
+        #endregion
 
         #region create factories
 
@@ -65,12 +90,23 @@ namespace SnakeSnake {
             foodFactory.PreloadPrefab("Foods/Food");
         }
 
+        private void CreateGameOverWindowFactory() {
+            gameOverWindowFactory = new GameOverWindowFactory();
+            gameOverWindowFactory.PreloadPrefabs("UI/GameOverWindow");
+        }
+
+        private void CreateGameScoreUIFactory() {
+            gameScoreUIFactory = new GameScoreUIFactory();
+            gameScoreUIFactory.PreloadScoreUI("UI/ScoreUI");
+        }
+
         #endregion
 
         #region create obeerver
 
         private void CreateSnakeCollideObserver() {
-            snakeCollideObserver = new MainSnakeCollideObserver(this);
+            var me = this;
+            snakeCollideObserver = new MainSnakeCollideObserver(ref me);
         }
 
         #endregion
@@ -89,14 +125,27 @@ namespace SnakeSnake {
             snakeController.Register(snake);
         }
 
+        private void CreateGameOverWindow() {
+            gameOverWindow = gameOverWindowFactory.CreateGameOverWindow(mainCanvas.transform);
+        }
+
+        private void CreateGameScoreUI() {
+            gameScoreUI = gameScoreUIFactory.CreateGameScoreUI(mainCanvas.transform);
+        }
+
         private void CreateFood() {
             Vector3 position = GetRandomPosition(9, 5);
             currentFoodObject = foodFactory.CreateFood(position);
         }
 
+
         #endregion
 
         #region setup event
+
+        private void SetupGameOverWindowEvent() {
+            gameOverWindow.OnRetry = OnRetry;
+        }
 
         private void SetupSnakeEvent() {
             snake.RegisterCollideObserver(snakeCollideObserver);
@@ -131,16 +180,19 @@ namespace SnakeSnake {
                     //game over
                     DisableSnake();
                     DestroyCurrentFood();
+                    OpenGameOverWindow();
+                    DisableSnakeController();
                     break;
             }
         }
 
         private void IncreaseScore(int scoreUp = 1) {
             score += scoreUp;
+            gameScoreUI.SetScore(score);
         }
 
-        private void AddSnakeBody() {
-            snakeFactory.AddSnakeBodies(snake, 2);
+        private void AddSnakeBody(int length = 2) {
+            snakeFactory.AddSnakeBodies(snake, length);
         }
 
         private void DestroyCurrentFood() {
@@ -149,6 +201,18 @@ namespace SnakeSnake {
 
         private void DisableSnake() {
             snake.enabled = false;
+        }
+
+        private void DisableSnakeController() {
+            snakeController.enabled = false;
+        }
+
+        private void OpenGameOverWindow() {
+            gameOverWindow.Open(score);
+        }
+
+        private void OnRetry() {
+            SceneManager.LoadScene(GameScene);
         }
 
         #endregion

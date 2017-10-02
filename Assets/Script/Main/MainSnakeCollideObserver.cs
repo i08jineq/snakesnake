@@ -12,7 +12,7 @@ namespace SnakeSnake {
 
         #region initial
 
-        public MainSnakeCollideObserver(Main m) {
+        public MainSnakeCollideObserver(ref Main m) {
             main = m;
         }
 
