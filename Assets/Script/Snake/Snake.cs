@@ -13,6 +13,9 @@ namespace SnakeSnake {
         private List<SnakeBody> bodyList = new List<SnakeBody>();
         private SnakeBody tail;
         private ICollideObserver collideOberver;
+        private float movementRangeX = 10;
+        private float movementRangeY = 5;
+
 
         private Vector3 previousPosition;
         private const float UpdateTargetPositionPeriod = 0.03f;
@@ -28,7 +31,24 @@ namespace SnakeSnake {
         private void UpdateMovement() {
             float distance = movementSpeed * Time.deltaTime;
             previousPosition = transform.position;
-            transform.position += movementDirection * distance;
+            Vector3 position = transform.position;
+            position += movementDirection * distance;
+
+            float x = position.x;
+            float y = position.y;
+            float clampX = Mathf.Clamp(x, -movementRangeX, movementRangeX);
+            float clampY = Mathf.Clamp(y, -movementRangeY, movementRangeY);
+            if(x != clampX) {
+                x = clampX;
+                x = -x;
+            }
+            if(y != clampY) {
+                y = clampY;
+                y = -y;
+            }
+            position.x = x;
+            position.y = y;
+            transform.position = position;
         }
 
 
@@ -57,6 +77,11 @@ namespace SnakeSnake {
 
         public void SetSpeed(float speed) {
             movementSpeed = speed;
+        }
+
+        public void SetMovementRange(float rangeX, float rangeY) { 
+            movementRangeX = rangeX;
+            movementRangeY = rangeY;
         }
 
         public void Turn(Vector3 direction) {

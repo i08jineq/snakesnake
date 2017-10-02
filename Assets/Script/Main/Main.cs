@@ -40,7 +40,8 @@ namespace SnakeSnake {
 
         private const string GameScene = "GameScene";
         private const float snakeStartSpeed = 10;
-
+        private const float RangeX = 10;
+        private const float RangeY = 5.5f;
         #endregion
 
         #region initial
@@ -64,8 +65,8 @@ namespace SnakeSnake {
             CreateGameOverWindow();
             CreateGameScoreUI();
 
-            SetupGameOverWindowEvent();
-            SetupSnakeEvent();
+            SetupGameOverWindow();
+            SetupSnake();
         }
 
         #endregion
@@ -134,7 +135,7 @@ namespace SnakeSnake {
         }
 
         private void CreateFood() {
-            Vector3 position = GetRandomPosition(9, 5);
+            Vector3 position = GetRandomPosition(9, 5.5f);
             currentFoodObject = foodFactory.CreateFood(position);
         }
 
@@ -143,11 +144,12 @@ namespace SnakeSnake {
 
         #region setup event
 
-        private void SetupGameOverWindowEvent() {
+        private void SetupGameOverWindow() {
             gameOverWindow.OnRetry = OnRetry;
         }
 
-        private void SetupSnakeEvent() {
+        private void SetupSnake() {
+            snake.SetMovementRange(RangeX, RangeY);
             snake.RegisterCollideObserver(snakeCollideObserver);
         }
 
