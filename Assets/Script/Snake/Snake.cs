@@ -67,6 +67,7 @@ namespace SnakeSnake {
             transform.up = direction;
 
             UpdateMovement();
+            UpdateBody();
         }
 
         #endregion
