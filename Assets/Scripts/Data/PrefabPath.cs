@@ -9,9 +9,13 @@ namespace SnakeSnake
         public const string StartUpUIPrefab = "Prefabs/UI/StartUpUI";
 
         #region snake
-        public const string SnakeHeadPrefab = "Prefabs/Snake/SnakeHead";
-        public const string SnakeBodyPrefab = "Prefabs/Snake/SnakeBody";
-        public const string SnakeTailPrefab = "Prefabs/Snake/SnakeTail";
+        public const string SnakeHeadPath = "Prefabs/Snake/SnakeHead";
+        public const string SnakeBodyPath = "Prefabs/Snake/SnakeBody";
+        public const string SnakeTailPath = "Prefabs/Snake/SnakeTail";
+        #endregion
+
+        #region food
+        public const string FoodPath = "Prefabs/Food/Food";
         #endregion
     }
 }

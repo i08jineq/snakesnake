@@ -38,7 +38,13 @@ namespace SnakeSnake
         public IFood CreateFood<T>() where T: MonoBehaviour, IFood
         {
             GameObject foodGameObject = GameObject.Instantiate<GameObject>(foodPrefab);
+            foodGameObject.name = foodGameObject.name.Replace("(Clone)", "");
+            foodGameObject.layer = PhysicLayer.FoodLayer;
+
+            foodGameObject.AddComponent<BoxCollider2D>();
+
             T food = foodGameObject.AddComponent<T>();
+
             return food;
         }
 

@@ -7,6 +7,7 @@ namespace SnakeSnake
     public class GameMain : MonoBehaviour
     {
         private SnakeFactory snakeFactory;
+        private FoodFactory foodFactory;
         private Snake snake;
 
         [SerializeField]private float snakeStartSpeed = 5;
@@ -16,8 +17,10 @@ namespace SnakeSnake
 
         void Awake()
         {
-            CreateSnakefactory();
+            CreateSnakeFactory();
+            CreateFoodFactory();
             CreateSnake();
+            CreateFood();
         }
 
         void Start()
@@ -38,9 +41,14 @@ namespace SnakeSnake
 
         #region create items
 
-        private void CreateSnakefactory()
+        private void CreateSnakeFactory()
         {
-            snakeFactory = new SnakeFactory(PrefabPath.SnakeHeadPrefab, PrefabPath.SnakeBodyPrefab, PrefabPath.SnakeTailPrefab);
+            snakeFactory = new SnakeFactory(PrefabPath.SnakeHeadPath, PrefabPath.SnakeBodyPath, PrefabPath.SnakeTailPath);
+        }
+
+        private void CreateFoodFactory()
+        {
+            foodFactory = new FoodFactory(PrefabPath.FoodPath);
         }
 
         private void CreateSnake()
@@ -49,6 +57,11 @@ namespace SnakeSnake
             snake = snakeFactory.CreateSnake<KeyboardController>(position, true, snakeStartLength);
             snake.enabled = false;
             snake.onSnakeCollide = OnSnakeCollision;
+        }
+
+        private void CreateFood()
+        {
+            foodFactory.CreateFood<NormalFood>(5, 9);
         }
 
         #endregion
@@ -80,6 +93,7 @@ namespace SnakeSnake
 
         private void OnSnakeCollidedFood()
         {
+            
         }
 
         private void OnSnakeCollidedBodySegment()
