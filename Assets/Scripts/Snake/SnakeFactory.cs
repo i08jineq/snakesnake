@@ -23,9 +23,9 @@ namespace SnakeSnake
 
         #region public methods
 
-        public ISnake CreateSnake<T>(Vector3 position, bool usePhysic = true, int startBodyNumber = 1) where T: IInputController, new()
+        public Snake CreateSnake<T>(Vector3 position, bool usePhysic = true, int startBodyNumber = 1) where T: IInputController, new()
         {
-            ISnake snake = CreateSnake(position, usePhysic, startBodyNumber);
+            Snake snake = CreateSnake(position, usePhysic, startBodyNumber);
             T input = new T();
             snake.SetController(input);
             return snake;
@@ -49,25 +49,14 @@ namespace SnakeSnake
 
         #region private methods
 
-        private ISnake CreateSnake(Vector3 position, bool usePhysic = true, int startBodyNumber = 1)
+        private Snake CreateSnake(Vector3 position, bool usePhysic = true, int startBodyNumber = 1)
         {
-            GameObject snakeGameObject = GameObject.Instantiate<GameObject>(headPrefab);
-            snakeGameObject.name = snakeGameObject.name.Replace("(Clone)", "");
-            snakeGameObject.transform.position = position;
-            snakeGameObject.layer = PhysicLayer.SnakeLayer;
-
+            Snake snake = (Snake)CreateSnake();
+            snake.transform.position = position;
             if (usePhysic)
             {
-                BoxCollider2D collider = snakeGameObject.AddComponent<BoxCollider2D>();
-                collider.offset = new Vector2(0, 0.5f);
-                collider.size = new Vector2(0.25f, 0.5f);
-                collider.isTrigger = true;
-                Rigidbody2D rigid = snakeGameObject.AddComponent<Rigidbody2D>();
-                rigid.gravityScale = 0;
-                rigid.isKinematic = true;
+                SetupSnakePhysic(snake);
             }
-
-            Snake snake = snakeGameObject.AddComponent<Snake>();
 
             for (int i = 0; i < startBodyNumber; i++)
             {
@@ -76,6 +65,15 @@ namespace SnakeSnake
 
             createTail(snake, usePhysic);
 
+            return snake;
+        }
+
+        private Snake CreateSnake()
+        {
+            GameObject snakeGameObject = GameObject.Instantiate<GameObject>(headPrefab);
+            snakeGameObject.name = snakeGameObject.name.Replace("(Clone)", "");
+            snakeGameObject.layer = PhysicLayer.SnakeLayer;
+            Snake snake = snakeGameObject.AddComponent<Snake>();
             return snake;
         }
 
@@ -96,6 +94,17 @@ namespace SnakeSnake
 
             SnakeBodySegment bodySegment = bodyGameObject.AddComponent<SnakeBodySegment>();
             return bodySegment;
+        }
+
+        private void SetupSnakePhysic(Snake snake)
+        {
+            BoxCollider2D collider = snake.gameObject.AddComponent<BoxCollider2D>();
+            collider.offset = new Vector2(0, 0.5f);
+            collider.size = new Vector2(0.25f, 0.5f);
+            collider.isTrigger = true;
+            Rigidbody2D rigid = snake.gameObject.AddComponent<Rigidbody2D>();
+            rigid.gravityScale = 0;
+            rigid.isKinematic = true;
         }
 
         #endregion

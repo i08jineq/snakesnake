@@ -46,7 +46,7 @@ namespace SnakeSnake
         private void CreateSnake()
         {
             Vector3 position = new Vector3(-1, -1, 0);
-            snake = (Snake)snakeFactory.CreateSnake<KeyboardController>(position, true, snakeStartLength);
+            snake = snakeFactory.CreateSnake<KeyboardController>(position, true, snakeStartLength);
             snake.enabled = false;
             snake.onSnakeCollide = OnSnakeCollision;
         }
