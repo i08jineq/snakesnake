@@ -6,18 +6,20 @@ namespace SnakeSnake
 {
     public class SnakeBodySegment : MonoBehaviour
     {
-        public void UpdateTransform(Vector3 targetPosition)
+        public void UpdateTransform(Vector3 targetPosition, Vector3 direction)
         {
-            if (targetPosition != transform.position)
-            {
-                transform.up = targetPosition - transform.position;
-            }
+            transform.up = direction;
             transform.position = targetPosition;
         }
 
         public Vector3 GetPosition()
         {
             return transform.position;
+        }
+
+        public Vector3 GetDirection()
+        {
+            return transform.up;
         }
     }
 }

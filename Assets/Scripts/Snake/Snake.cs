@@ -10,6 +10,7 @@ namespace SnakeSnake
         private float speed = 1;
 
         private Vector3 previousPosition;
+        private Vector3 previousDirection;
 
         private IInputController inputController;
         private List<SnakeBodySegment> bodySegmentList = new List<SnakeBodySegment>();
@@ -23,7 +24,7 @@ namespace SnakeSnake
         {
             UpdateInput();
 
-            CachePreviousPosition();
+            CachePreviousTransform();
             Move();
 
             UpdateBodySegment();
@@ -43,15 +44,15 @@ namespace SnakeSnake
         {
             Vector3 position = GetLastBodyPosition();
             Vector3 direction = GetLasBodyDirection();
-            body.transform.up = direction;
-            body.transform.position = position;
+            body.UpdateTransform(position, direction);
             bodySegmentList.Add(body);
         }
 
         public void AddTailSegment(SnakeBodySegment _tail)
         {
             Vector3 position = GetLastBodyPosition();
-            _tail.UpdateTransform(position);
+            Vector3 direction = GetLasBodyDirection();
+            _tail.UpdateTransform(position, direction);
             tail = _tail;
         }
 
@@ -91,9 +92,10 @@ namespace SnakeSnake
             inputController.UpdateInput();
         }
 
-        private void CachePreviousPosition()
+        private void CachePreviousTransform()
         {
             previousPosition = transform.position;
+            previousDirection = transform.up;
         }
 
         private void Move()
@@ -104,15 +106,19 @@ namespace SnakeSnake
         private void UpdateBodySegment()
         {
             Vector3 targetPosition = previousPosition;
+            Vector3 targetDirection = previousDirection;
             Vector3 segmentPreviousPosition = previousPosition;
+            Vector3 segmentPreviousDirection = previousDirection;
             foreach (var segment in bodySegmentList)
             {
                 segmentPreviousPosition = segment.GetPosition();
-                segment.UpdateTransform(targetPosition);
+                segmentPreviousDirection = segment.GetDirection();
+                segment.UpdateTransform(targetPosition, targetDirection);
                 targetPosition = segmentPreviousPosition;
+                targetDirection = segmentPreviousDirection;
             }
 
-            tail.UpdateTransform(targetPosition);
+            tail.UpdateTransform(targetPosition, targetDirection);
         }
 
         private Vector3 GetLastBodyPosition()
@@ -130,10 +136,10 @@ namespace SnakeSnake
         {
             if (bodySegmentList.Count == 0)
             {
-                return transform.up;
+                return previousDirection;
             }
             int lastIndex = bodySegmentList.Count - 1;
-            Vector3 direction = bodySegmentList[lastIndex].transform.up;
+            Vector3 direction = bodySegmentList[lastIndex].GetDirection();
             return direction;
         }
 
