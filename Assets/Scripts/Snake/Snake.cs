@@ -125,7 +125,7 @@ namespace SnakeSnake
         {
             if (bodySegmentList.Count == 0)
             {
-                return previousPosition;
+                return transform.position;
             }
             int lastIndex = bodySegmentList.Count - 1;
             Vector3 position = bodySegmentList[lastIndex].GetPosition();
@@ -136,7 +136,7 @@ namespace SnakeSnake
         {
             if (bodySegmentList.Count == 0)
             {
-                return previousDirection;
+                return transform.up;
             }
             int lastIndex = bodySegmentList.Count - 1;
             Vector3 direction = bodySegmentList[lastIndex].GetDirection();
