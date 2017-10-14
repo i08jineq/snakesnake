@@ -21,64 +21,78 @@ namespace SnakeSnake
 
         #endregion
 
-        #region public method
+        #region public methods
 
-        private ISnake CreateSnake(Vector3 position, int startBodyNumber = 1)
+        public ISnake CreateSnake<T>(Vector3 position, bool usePhysic = true, int startBodyNumber = 1) where T: IInputController, new()
         {
-            GameObject snakeGameObject = GameObject.Instantiate<GameObject>(headPrefab);
-            snakeGameObject.name = snakeGameObject.name.Replace("(Clone)", "");
-            snakeGameObject.transform.position = position;
-            snakeGameObject.layer = PhysicLayer.SnakeLayer;
-            BoxCollider2D collider = snakeGameObject.AddComponent<BoxCollider2D>();
-            collider.offset = new Vector2(0, 0.5f);
-            collider.size = new Vector2(0.25f, 0.5f);
-            Rigidbody2D rigid = snakeGameObject.AddComponent<Rigidbody2D>();
-
-            rigid.isKinematic = true;
-
-            Snake snake = snakeGameObject.AddComponent<Snake>();
-
-            for(int i = 0; i < startBodyNumber; i++)
-            {
-                createBody(snake);
-            }
-
-            createTail(snake);
-
-            return snake;
-        }
-
-        public ISnake CreateSnake<T>(Vector3 position, int startBodyNumber = 1) where T: IInputController, new()
-        {
-            ISnake snake = CreateSnake(position, startBodyNumber);
+            ISnake snake = CreateSnake(position, usePhysic, startBodyNumber);
             T input = new T();
             snake.SetController(input);
             return snake;
         }
 
-        public ISnakeBodySegment createBody(ISnake snake)
+        public ISnakeBodySegment createBody(ISnake snake, bool usePhysic)
         {
-            ISnakeBodySegment segment = createBodySegment(bodyPrefab);
+            ISnakeBodySegment segment = createBodySegment(bodyPrefab, usePhysic);
             snake.AddBodySegment(segment);
             return segment;
         }
 
-        public ISnakeBodySegment createTail(ISnake snake)
+        public ISnakeBodySegment createTail(ISnake snake, bool usePhysic)
         {
-            ISnakeBodySegment segment = createBodySegment(tailPrefab);
+            ISnakeBodySegment segment = createBodySegment(tailPrefab, usePhysic);
             snake.AddTailSegment(segment);
             return segment;
         }
 
-        private ISnakeBodySegment createBodySegment(GameObject prefab)
+        #endregion
+
+        #region private methods
+
+        private ISnake CreateSnake(Vector3 position, bool usePhysic = true, int startBodyNumber = 1)
+        {
+            GameObject snakeGameObject = GameObject.Instantiate<GameObject>(headPrefab);
+            snakeGameObject.name = snakeGameObject.name.Replace("(Clone)", "");
+            snakeGameObject.transform.position = position;
+            snakeGameObject.layer = PhysicLayer.SnakeLayer;
+
+            if (usePhysic)
+            {
+                BoxCollider2D collider = snakeGameObject.AddComponent<BoxCollider2D>();
+                collider.offset = new Vector2(0, 0.5f);
+                collider.size = new Vector2(0.25f, 0.5f);
+                collider.isTrigger = true;
+                Rigidbody2D rigid = snakeGameObject.AddComponent<Rigidbody2D>();
+                rigid.gravityScale = 0;
+                rigid.isKinematic = true;
+            }
+
+            Snake snake = snakeGameObject.AddComponent<Snake>();
+
+            for (int i = 0; i < startBodyNumber; i++)
+            {
+                createBody(snake, usePhysic);
+            }
+
+            createTail(snake, usePhysic);
+
+            return snake;
+        }
+
+        private ISnakeBodySegment createBodySegment(GameObject prefab, bool usePhysic)
         {
             GameObject bodyGameObject = GameObject.Instantiate<GameObject>(prefab);
             bodyGameObject.name = bodyGameObject.name.Replace("(Clone)", "");
             bodyGameObject.layer = PhysicLayer.SnakeBodySegmentLayer;
 
-            bodyGameObject.AddComponent<BoxCollider2D>();
-            Rigidbody2D rigid = bodyGameObject.AddComponent<Rigidbody2D>();
-            rigid.isKinematic = true;
+            if (usePhysic)
+            {
+                BoxCollider2D collider = bodyGameObject.AddComponent<BoxCollider2D>();
+                collider.isTrigger = true;
+                Rigidbody2D rigid = bodyGameObject.AddComponent<Rigidbody2D>();
+                rigid.gravityScale = 0;
+                rigid.isKinematic = true;
+            }
 
             SnakeBodySegment bodySegment = bodyGameObject.AddComponent<SnakeBodySegment>();
             return bodySegment;

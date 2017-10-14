@@ -15,7 +15,9 @@ namespace SnakeSnake
         private List<ISnakeBodySegment> bodySegmentList = new List<ISnakeBodySegment>();
         private ISnakeBodySegment tail;
 
-        #region public method
+        public System.Action<Collider2D> onSnakeCollide;
+
+        #region public methods
 
         public void Update()
         {
@@ -29,6 +31,10 @@ namespace SnakeSnake
 
         public void Turn(Vector3 direction)
         {
+            if (direction == -moveDirection)
+            {
+                return;
+            }
             moveDirection = direction;
             transform.up = direction;
         }
@@ -61,7 +67,7 @@ namespace SnakeSnake
 
         #endregion
 
-        #region private method
+        #region private methods
 
         private void UpdateInput()
         {
@@ -101,6 +107,15 @@ namespace SnakeSnake
             int lastIndex = bodySegmentList.Count - 1;
             Vector3 position = bodySegmentList[lastIndex].GetPosition();
             return position;
+        }
+
+        #endregion
+
+        #region events
+
+        public void OnTriggerEnter2D(Collider2D col)
+        {
+            onSnakeCollide.Invoke(col);
         }
 
         #endregion

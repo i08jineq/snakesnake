@@ -46,8 +46,9 @@ namespace SnakeSnake
         private void CreateSnake()
         {
             Vector3 position = new Vector3(-1, -1, 0);
-            snake = (Snake)snakeFactory.CreateSnake<KeyboardController>(position, snakeStartLength);
+            snake = (Snake)snakeFactory.CreateSnake<KeyboardController>(position, true, snakeStartLength);
             snake.enabled = false;
+            snake.onSnakeCollide = OnSnakeCollision;
         }
 
         #endregion
@@ -57,6 +58,32 @@ namespace SnakeSnake
         private void SetupSnake()
         {
             snake.SetSpeed(snakeStartSpeed);
+        }
+
+        #endregion
+
+        #region events
+
+        private void OnSnakeCollision(Collider2D collider)
+        {
+            int collidedLayer = collider.gameObject.layer;
+            switch (collidedLayer)
+            {
+                case PhysicLayer.SnakeBodySegmentLayer:
+                    OnSnakeCollidedBodySegment();
+                    break;
+                case PhysicLayer.FoodLayer:
+                    OnSnakeCollidedFood();
+                    break;
+            }
+        }
+
+        private void OnSnakeCollidedFood()
+        {
+        }
+
+        private void OnSnakeCollidedBodySegment()
+        {
         }
 
         #endregion

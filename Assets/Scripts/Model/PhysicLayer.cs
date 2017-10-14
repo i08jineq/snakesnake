@@ -8,5 +8,6 @@ namespace SnakeSnake
     {
         public const int SnakeLayer = 8;
         public const int SnakeBodySegmentLayer = 9;
+        public const int FoodLayer = 10;
     }
 }
