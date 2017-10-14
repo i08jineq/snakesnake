@@ -31,28 +31,28 @@ namespace SnakeSnake
             return snake;
         }
 
-        public List<ISnakeBodySegment> createBodies(ISnake snake, int number, bool usePhysic)
+        public List<SnakeBodySegment> createBodies(ISnake snake, int number, bool usePhysic)
         {
-            List<ISnakeBodySegment> segmentList = new List<ISnakeBodySegment>();
+            List<SnakeBodySegment> segmentList = new List<SnakeBodySegment>();
             for (int i = 0; i < number; i++)
             {
-                ISnakeBodySegment segment = createBody(snake, usePhysic);
+                SnakeBodySegment segment = createBody(snake, usePhysic);
                 segmentList.Add(segment);
             }
 
             return segmentList;
         }
 
-        public ISnakeBodySegment createBody(ISnake snake, bool usePhysic)
+        public SnakeBodySegment createBody(ISnake snake, bool usePhysic)
         {
-            ISnakeBodySegment segment = createBodySegment(bodyPrefab, usePhysic);
+            SnakeBodySegment segment = createBodySegment(bodyPrefab, usePhysic);
             snake.AddBodySegment(segment);
             return segment;
         }
 
-        public ISnakeBodySegment createTail(ISnake snake, bool usePhysic)
+        public SnakeBodySegment createTail(ISnake snake, bool usePhysic)
         {
-            ISnakeBodySegment segment = createBodySegment(tailPrefab, usePhysic);
+            SnakeBodySegment segment = createBodySegment(tailPrefab, usePhysic);
             snake.AddTailSegment(segment);
             return segment;
         }
@@ -89,7 +89,7 @@ namespace SnakeSnake
             return snake;
         }
 
-        private ISnakeBodySegment createBodySegment(GameObject prefab, bool usePhysic)
+        private SnakeBodySegment createBodySegment(GameObject prefab, bool usePhysic)
         {
             GameObject bodyGameObject = GameObject.Instantiate<GameObject>(prefab);
             bodyGameObject.name = bodyGameObject.name.Replace("(Clone)", "");

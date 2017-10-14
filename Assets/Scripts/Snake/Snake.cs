@@ -12,8 +12,8 @@ namespace SnakeSnake
         private Vector3 previousPosition;
 
         private IInputController inputController;
-        private List<ISnakeBodySegment> bodySegmentList = new List<ISnakeBodySegment>();
-        private ISnakeBodySegment tail;
+        private List<SnakeBodySegment> bodySegmentList = new List<SnakeBodySegment>();
+        private SnakeBodySegment tail;
 
         public System.Action<Collider2D> onSnakeCollide;
 
@@ -39,15 +39,15 @@ namespace SnakeSnake
             transform.up = direction;
         }
 
-        public void AddBodySegment(ISnakeBodySegment body)
+        public void AddBodySegment(SnakeBodySegment body)
         {
+            
             Vector3 position = GetLastBodyPosition();
             body.UpdateTransform(position);
-
             bodySegmentList.Add(body);
         }
 
-        public void AddTailSegment(ISnakeBodySegment _tail)
+        public void AddTailSegment(SnakeBodySegment _tail)
         {
             Vector3 position = GetLastBodyPosition();
             _tail.UpdateTransform(position);

@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace SnakeSnake
 {
-    public class SnakeBodySegment : MonoBehaviour, ISnakeBodySegment
+    public class SnakeBodySegment : MonoBehaviour
     {
         public void UpdateTransform(Vector3 targetPosition)
         {
