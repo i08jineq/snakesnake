@@ -112,7 +112,7 @@ namespace SnakeSnake
         {
             BoxCollider2D collider = snake.gameObject.AddComponent<BoxCollider2D>();
             collider.offset = new Vector2(0, 0.5f);
-            collider.size = new Vector2(0.25f, 0.5f);
+            collider.size = new Vector2(0.25f, 0.25f);
             collider.isTrigger = true;
             Rigidbody2D rigid = snake.gameObject.AddComponent<Rigidbody2D>();
             rigid.gravityScale = 0;

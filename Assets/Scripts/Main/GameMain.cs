@@ -79,7 +79,7 @@ namespace SnakeSnake
 
         private void CreateFood()
         {
-            foodFactory.CreateFood<NormalFood>(5, 9);
+            foodFactory.CreateFood<NormalFood>(9, 5);
         }
 
         #endregion
