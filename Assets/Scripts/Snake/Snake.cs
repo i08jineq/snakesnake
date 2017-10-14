@@ -41,9 +41,10 @@ namespace SnakeSnake
 
         public void AddBodySegment(SnakeBodySegment body)
         {
-            
             Vector3 position = GetLastBodyPosition();
-            body.UpdateTransform(position);
+            Vector3 direction = GetLasBodyDirection();
+            body.transform.up = direction;
+            body.transform.position = position;
             bodySegmentList.Add(body);
         }
 
@@ -107,6 +108,17 @@ namespace SnakeSnake
             int lastIndex = bodySegmentList.Count - 1;
             Vector3 position = bodySegmentList[lastIndex].GetPosition();
             return position;
+        }
+
+        private Vector3 GetLasBodyDirection()
+        {
+            if (bodySegmentList.Count == 0)
+            {
+                return transform.up;
+            }
+            int lastIndex = bodySegmentList.Count - 1;
+            Vector3 direction = bodySegmentList[lastIndex].transform.up;
+            return direction;
         }
 
         #endregion

@@ -8,7 +8,10 @@ namespace SnakeSnake
     {
         public void UpdateTransform(Vector3 targetPosition)
         {
-            transform.up = targetPosition - transform.position;
+            if (targetPosition != transform.position)
+            {
+                transform.up = targetPosition - transform.position;
+            }
             transform.position = targetPosition;
         }
 
