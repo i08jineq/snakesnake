@@ -31,6 +31,18 @@ namespace SnakeSnake
             return snake;
         }
 
+        public List<ISnakeBodySegment> createBodies(ISnake snake, int number, bool usePhysic)
+        {
+            List<ISnakeBodySegment> segmentList = new List<ISnakeBodySegment>();
+            for (int i = 0; i < number; i++)
+            {
+                ISnakeBodySegment segment = createBody(snake, usePhysic);
+                segmentList.Add(segment);
+            }
+
+            return segmentList;
+        }
+
         public ISnakeBodySegment createBody(ISnake snake, bool usePhysic)
         {
             ISnakeBodySegment segment = createBodySegment(bodyPrefab, usePhysic);

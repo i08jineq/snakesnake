@@ -10,8 +10,14 @@ namespace SnakeSnake
         private FoodFactory foodFactory;
         private Snake snake;
 
+        private int score = 0;
+        private bool isGameOver = false;
         [SerializeField]private float snakeStartSpeed = 5;
         [SerializeField]private int snakeStartLength = 3;
+        [SerializeField]private int snakeIncreaseLength = 3;
+        [SerializeField]private Canvas MainCanvas;
+
+        private GameMainUI gameMainUI;
 
         #region initial
 
@@ -19,6 +25,7 @@ namespace SnakeSnake
         {
             CreateSnakeFactory();
             CreateFoodFactory();
+            CreateGameMainUI();
             CreateSnake();
             CreateFood();
         }
@@ -34,6 +41,10 @@ namespace SnakeSnake
 
         void Update()
         {
+            if (isGameOver)
+            {
+                return;
+            }
             snake.Update();
         }
 
@@ -49,6 +60,13 @@ namespace SnakeSnake
         private void CreateFoodFactory()
         {
             foodFactory = new FoodFactory(PrefabPath.FoodPath);
+        }
+
+        private void CreateGameMainUI()
+        {
+            GameMainUI prefab = Resources.Load<GameMainUI>(PrefabPath.MainGameUIPrefab);
+            gameMainUI = GameObject.Instantiate<GameMainUI>(prefab);
+            gameMainUI.SetScore(0);
         }
 
         private void CreateSnake()
@@ -86,18 +104,44 @@ namespace SnakeSnake
                     OnSnakeCollidedBodySegment();
                     break;
                 case PhysicLayer.FoodLayer:
-                    OnSnakeCollidedFood();
+                    OnSnakeCollidedFood(collider);
                     break;
             }
         }
 
-        private void OnSnakeCollidedFood()
-        {
-            
+        private void OnSnakeCollidedFood(Collider2D collider)
+        {            
+            IncreaseScore(collider);
+
+            Destroy(collider.gameObject);
+
+            CreateFood();
+
+            IncreaseSnakeBodyLength();
         }
 
         private void OnSnakeCollidedBodySegment()
         {
+            isGameOver = true;
+        }
+
+        private void IncreaseScore(Collider2D collider)
+        {
+            NormalFood food = collider.gameObject.GetComponent<NormalFood>();
+            int increaseScore = food.GetScore();
+            score += increaseScore;
+
+            UpdateScoreUI();
+        }
+
+        private void UpdateScoreUI()
+        {
+            gameMainUI.SetScore(score);
+        }
+
+        private void IncreaseSnakeBodyLength()
+        {
+            snakeFactory.createBodies(snake, snakeIncreaseLength, true);
         }
 
         #endregion
