@@ -6,8 +6,8 @@ namespace SnakeSnake
 {
     public class Snake : MonoBehaviour, ISnake
     {
-        private Vector3 moveDirection;
-        private float speed;
+        private Vector3 moveDirection = Vector3.up;
+        private float speed = 1;
 
         private Vector3 previousPosition;
 
@@ -74,7 +74,7 @@ namespace SnakeSnake
 
         private void Move()
         {
-            transform.position += moveDirection * speed;
+            transform.position += moveDirection * speed * Time.deltaTime;
         }
 
         private void UpdateBodySegment()

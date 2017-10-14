@@ -23,7 +23,7 @@ namespace SnakeSnake
 
         #region public method
 
-        public ISnake CreateSnake(Vector3 position, int startBodyNumber = 1)
+        private ISnake CreateSnake(Vector3 position, int startBodyNumber = 1)
         {
             GameObject snakeGameObject = GameObject.Instantiate<GameObject>(headPrefab);
             snakeGameObject.transform.position = position;
@@ -34,10 +34,12 @@ namespace SnakeSnake
                 createBody(snake);
             }
 
+            createTail(snake);
+
             return snake;
         }
 
-        public ISnake CreatSnake<T>(Vector3 position, int startBodyNumber = 1) where T: IInputController, new()
+        public ISnake CreateSnake<T>(Vector3 position, int startBodyNumber = 1) where T: IInputController, new()
         {
             ISnake snake = CreateSnake(position, startBodyNumber);
             T input = new T();
@@ -47,23 +49,22 @@ namespace SnakeSnake
 
         public ISnakeBodySegment createBody(ISnake snake)
         {
-            ISnakeBodySegment segment = createBodySegment(bodyPrefab, snake);
+            ISnakeBodySegment segment = createBodySegment(bodyPrefab);
+            snake.AddBodySegment(segment);
             return segment;
         }
 
         public ISnakeBodySegment createTail(ISnake snake)
         {
-            ISnakeBodySegment segment = createBodySegment(tailPrefab, snake);
+            ISnakeBodySegment segment = createBodySegment(tailPrefab);
+            snake.AddTailSegment(segment);
             return segment;
         }
 
-        private ISnakeBodySegment createBodySegment(GameObject prefab, ISnake snake)
+        private ISnakeBodySegment createBodySegment(GameObject prefab)
         {
             GameObject body = GameObject.Instantiate<GameObject>(prefab);
             SnakeBodySegment bodySegment = body.AddComponent<SnakeBodySegment>();
-
-            snake.AddBodySegment(bodySegment);
-
             return bodySegment;
         }
 
