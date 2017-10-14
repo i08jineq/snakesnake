@@ -66,6 +66,22 @@ namespace SnakeSnake
             inputController.RegisterSnake(this);
         }
 
+        public void ClamPosition(float xRange, float yRange)
+        {
+            Vector3 position = transform.position;
+            if (position.x != Mathf.Clamp(position.x, -xRange, xRange))
+            {
+                position.x = -position.x;
+            }
+
+            if (position.y != Mathf.Clamp(position.y, -yRange, yRange))
+            {
+                position.y = -position.y;
+            }
+
+            transform.position = position;
+        }
+
         #endregion
 
         #region private methods

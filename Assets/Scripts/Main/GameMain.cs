@@ -1,9 +1,11 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace SnakeSnake
 {
+    
     public class GameMain : MonoBehaviour
     {
         private SnakeFactory snakeFactory;
@@ -15,6 +17,8 @@ namespace SnakeSnake
         [SerializeField]private float snakeStartSpeed = 5;
         [SerializeField]private int snakeStartLength = 3;
         [SerializeField]private int snakeIncreaseLength = 3;
+        [SerializeField]private float xBorderRange = 9;
+        [SerializeField]private float yBorderRange = 5;
         [SerializeField]private Canvas MainCanvas;
 
         private GameMainUI gameMainUI;
@@ -45,7 +49,13 @@ namespace SnakeSnake
             {
                 return;
             }
+            UpdateSnake();
+        }
+
+        private void UpdateSnake()
+        {
             snake.Update();
+            snake.ClamPosition(xBorderRange, yBorderRange);
         }
 
         #endregion
@@ -67,6 +77,8 @@ namespace SnakeSnake
             GameMainUI prefab = Resources.Load<GameMainUI>(PrefabPath.MainGameUIPrefab);
             gameMainUI = GameObject.Instantiate<GameMainUI>(prefab);
             gameMainUI.SetScore(0);
+
+            gameMainUI.Init(OnRetry);
         }
 
         private void CreateSnake()
@@ -79,7 +91,7 @@ namespace SnakeSnake
 
         private void CreateFood()
         {
-            foodFactory.CreateFood<NormalFood>(9, 5);
+            foodFactory.CreateFood<NormalFood>(xBorderRange, yBorderRange);
         }
 
         #endregion
@@ -123,6 +135,7 @@ namespace SnakeSnake
         private void OnSnakeCollidedBodySegment()
         {
             isGameOver = true;
+            gameMainUI.OpenResultWindow(score);
         }
 
         private void IncreaseScore(Collider2D collider)
@@ -142,6 +155,11 @@ namespace SnakeSnake
         private void IncreaseSnakeBodyLength()
         {
             snakeFactory.createBodies(snake, snakeIncreaseLength, true);
+        }
+
+        private void OnRetry()
+        {
+            SceneManager.LoadScene(SceneName.GameScene);
         }
 
         #endregion
