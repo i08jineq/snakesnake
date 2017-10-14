@@ -9,12 +9,20 @@ namespace SnakeSnake
         private SnakeFactory snakeFactory;
         private Snake snake;
 
+        [SerializeField]private float snakeStartSpeed = 5;
+        [SerializeField]private int snakeStartLength = 3;
+
         #region initial
 
         void Awake()
         {
             CreateSnakefactory();
             CreateSnake();
+        }
+
+        void Start()
+        {
+            SetupSnake();
         }
 
         #endregion
@@ -38,8 +46,17 @@ namespace SnakeSnake
         private void CreateSnake()
         {
             Vector3 position = new Vector3(-1, -1, 0);
-            snake = (Snake)snakeFactory.CreateSnake<KeyboardController>(position);
+            snake = (Snake)snakeFactory.CreateSnake<KeyboardController>(position, snakeStartLength);
             snake.enabled = false;
+        }
+
+        #endregion
+
+        #region setup items
+
+        private void SetupSnake()
+        {
+            snake.SetSpeed(snakeStartSpeed);
         }
 
         #endregion

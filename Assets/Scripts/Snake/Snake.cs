@@ -30,6 +30,7 @@ namespace SnakeSnake
         public void Turn(Vector3 direction)
         {
             moveDirection = direction;
+            transform.up = direction;
         }
 
         public void AddBodySegment(ISnakeBodySegment body)
@@ -81,7 +82,7 @@ namespace SnakeSnake
         {
             Vector3 targetPosition = previousPosition;
             Vector3 segmentPreviousPosition = previousPosition;
-            foreach(var segment in bodySegmentList)
+            foreach (var segment in bodySegmentList)
             {
                 segmentPreviousPosition = segment.GetPosition();
                 segment.UpdateTransform(targetPosition);

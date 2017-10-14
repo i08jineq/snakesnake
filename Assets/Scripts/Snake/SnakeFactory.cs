@@ -26,7 +26,16 @@ namespace SnakeSnake
         private ISnake CreateSnake(Vector3 position, int startBodyNumber = 1)
         {
             GameObject snakeGameObject = GameObject.Instantiate<GameObject>(headPrefab);
+            snakeGameObject.name = snakeGameObject.name.Replace("(Clone)", "");
             snakeGameObject.transform.position = position;
+            snakeGameObject.layer = PhysicLayer.SnakeLayer;
+            BoxCollider2D collider = snakeGameObject.AddComponent<BoxCollider2D>();
+            collider.offset = new Vector2(0, 0.5f);
+            collider.size = new Vector2(0.25f, 0.5f);
+            Rigidbody2D rigid = snakeGameObject.AddComponent<Rigidbody2D>();
+
+            rigid.isKinematic = true;
+
             Snake snake = snakeGameObject.AddComponent<Snake>();
 
             for(int i = 0; i < startBodyNumber; i++)
@@ -63,8 +72,15 @@ namespace SnakeSnake
 
         private ISnakeBodySegment createBodySegment(GameObject prefab)
         {
-            GameObject body = GameObject.Instantiate<GameObject>(prefab);
-            SnakeBodySegment bodySegment = body.AddComponent<SnakeBodySegment>();
+            GameObject bodyGameObject = GameObject.Instantiate<GameObject>(prefab);
+            bodyGameObject.name = bodyGameObject.name.Replace("(Clone)", "");
+            bodyGameObject.layer = PhysicLayer.SnakeBodySegmentLayer;
+
+            bodyGameObject.AddComponent<BoxCollider2D>();
+            Rigidbody2D rigid = bodyGameObject.AddComponent<Rigidbody2D>();
+            rigid.isKinematic = true;
+
+            SnakeBodySegment bodySegment = bodyGameObject.AddComponent<SnakeBodySegment>();
             return bodySegment;
         }
 
